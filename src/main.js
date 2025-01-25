@@ -16,7 +16,13 @@ const uiConfig = {
     saveResult: saveResult,
 }
 
-const pixelate = 4;
+const params = {
+    pixelate: 1,
+    onPixelateChange: (v) => {
+        computeLowResTargetSize();
+        render();
+    },
+}
 
 const ditherShader = {
     uniforms: {
@@ -91,6 +97,18 @@ function loadTexture(file){
     reader.readAsDataURL(file);
 }
 
+function computeLowResTargetSize(){
+    if(!mesh?.material?.map){
+        return;
+    }
+    const width = mesh.material.map.image.width;
+    const height = mesh.material.map.image.height;
+    lowResTarget.setSize(
+        Math.floor(width/params.pixelate), 
+        Math.floor(height/params.pixelate)
+    );
+}
+
 function setSourceTexture(texture){
     if(mesh.material.map){
         mesh.material.map.dispose();
@@ -100,7 +118,7 @@ function setSourceTexture(texture){
 
     const size = getCanvasSize();
     renderer.setSize(size.width, size.height);
-    lowResTarget.setSize(Math.floor(texture.image.width/pixelate), Math.floor(texture.image.height/pixelate));
+    computeLowResTargetSize();
 
     render();
 }
@@ -189,5 +207,5 @@ window.addEventListener('resize', () => {
 
 await preload();
 setup();
-createGUI(uiConfig);
+createGUI(uiConfig, params);
 render();

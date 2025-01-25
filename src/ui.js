@@ -3,7 +3,7 @@ import * as TweakpaneFileImportPlugin from 'tweakpane-plugin-file-import';
 
 let pane;
 
-export function createGUI(config){
+export function createGUI(config, params){
     pane = new Pane();
     pane.registerPlugin(TweakpaneFileImportPlugin);
 
@@ -22,4 +22,10 @@ export function createGUI(config){
     pane.addButton({
         title: 'Save Result'
     }).on('click', config.saveResult);
+
+    pane.addBinding(params, 'pixelate', {
+        min: 1,
+        max: 16,
+        step: 1
+    }).on('change', params.onPixelateChange);
 }

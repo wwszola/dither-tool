@@ -101,12 +101,14 @@ function computeLowResTargetSize(){
     if(!mesh?.material?.map){
         return;
     }
-    const width = mesh.material.map.image.width;
-    const height = mesh.material.map.image.height;
-    lowResTarget.setSize(
-        Math.floor(width/params.pixelate), 
-        Math.floor(height/params.pixelate)
-    );
+    let width = mesh.material.map.image.width;
+    width = Math.floor(width/params.pixelate);
+    let height = mesh.material.map.image.height;
+    height = Math.floor(height/params.pixelate);
+    if(lowResTarget.width !== width || lowResTarget.height !== height){
+        lowResTarget.setSize(width, height);
+        console.log(width, height);
+    }
 }
 
 function setSourceTexture(texture){
@@ -151,7 +153,7 @@ function getCanvasSize(){
             height = width / textureSize.aspectRatio;
         }
     }
-    return {width, height};
+    return {width: Math.floor(width), height: Math.floor(height)};
 }
 
 async function saveResult(){

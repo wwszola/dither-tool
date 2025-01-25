@@ -106,8 +106,13 @@ function computeLowResTargetSize(){
     let height = mesh.material.map.image.height;
     height = Math.floor(height/params.pixelate);
     if(lowResTarget.width !== width || lowResTarget.height !== height){
+        // WebGLRenderTarget.setSize calls dispose on itself,
+        // thus allowing to commit size change to gpu
         lowResTarget.setSize(width, height);
-        console.log(width, height);
+        // EffectComposer keeps a clone of the render target as renderTarget2(readBuffer)
+        // calling EffectComposer.reset calls dispose on the readBuffer,
+        // thus properly commiting size change to the whole postprocessing pipeline
+        composer.reset(lowResTarget);
     }
 }
 

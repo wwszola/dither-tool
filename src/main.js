@@ -24,7 +24,7 @@ const ditherShader = {
     fragmentShader: null,
 };
 
-let renderer, buffer, composer, scene, camera, mesh;
+let renderer, lowResTarget, composer, scene, camera, mesh;
 
 async function preload(){
     const ditherVert = await fetch('src/glsl/dither-vert.glsl').then(
@@ -45,7 +45,7 @@ function setup(){
     renderer = new THREE.WebGLRenderer({ canvas });
     renderer.setSize(maxCanvasSize.width, maxCanvasSize.height);
 
-    buffer = new THREE.WebGLRenderTarget(maxCanvasSize.width, maxCanvasSize.height,{
+    lowResTarget = new THREE.WebGLRenderTarget(maxCanvasSize.width, maxCanvasSize.height,{
         magFilter: THREE.NearestFilter,
         minFilter: THREE.NearestFilter,
     });
@@ -63,7 +63,7 @@ function setup(){
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    composer = new EffectComposer(renderer, buffer);
+    composer = new EffectComposer(renderer, lowResTarget);
     const renderPass = new RenderPass(scene, camera);
     const ditherPass = new ShaderPass(ditherShader);
     const outputPass = new OutputPass();
@@ -94,7 +94,7 @@ function setSourceTexture(texture){
 
     const size = getCanvasSize();
     renderer.setSize(size.width, size.height);
-    buffer.setSize(texture.image.width/pixelate, texture.image.height/pixelate);
+    lowResTarget.setSize(texture.image.width/pixelate, texture.image.height/pixelate);
 
     render();
 }

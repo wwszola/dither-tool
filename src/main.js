@@ -5,7 +5,14 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 
+import { createGUI } from './ui.js';
+
 const canvas = document.getElementById('app');
+
+const uiConfig = {
+    file: '',
+    loadTexture: loadTexture,
+}
 
 const pixelate = 4;
 
@@ -69,6 +76,15 @@ function render(){
     composer.render();
 }
 
+function loadTexture(file){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const loader = new THREE.TextureLoader();
+        loader.load(e.target.result, setSourceTexture, undefined, console.error);
+    };
+    reader.readAsDataURL(file);
+}
+
 function setSourceTexture(texture){
     if(mesh.material.map){
         mesh.material.map.dispose();
@@ -120,23 +136,7 @@ window.addEventListener('resize', () => {
     render();
 });
 
-canvas.addEventListener('dragover', (event) => {
-    event.preventDefault();
-});
-
-canvas.addEventListener('drop', (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const loader = new THREE.TextureLoader();
-            loader.load(e.target.result, setSourceTexture, undefined, console.error);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
 await preload();
 setup();
+createGUI(uiConfig);
 render();

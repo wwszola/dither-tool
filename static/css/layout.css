@@ -51,3 +51,7 @@ canvas {
     max-width: 100%;
     height: auto;
 }
+
+#ui-container {
+    padding: 1rem;
+}

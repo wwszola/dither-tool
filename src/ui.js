@@ -1,10 +1,14 @@
 import { Pane } from 'tweakpane';
 import * as TweakpaneFileImportPlugin from 'tweakpane-plugin-file-import';
 
+const uiContainer = document.getElementById('ui-container');
+
 let pane;
 
 export function createGUI(config, params){
-    pane = new Pane();
+    pane = new Pane({
+        container: uiContainer,
+    });
     pane.registerPlugin(TweakpaneFileImportPlugin);
 
     pane.addBinding(config, 'file', {

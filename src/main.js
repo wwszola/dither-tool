@@ -11,7 +11,7 @@ const canvas = document.getElementById('app');
 
 const uiConfig = {
     file: '',
-    loadTexture: loadTexture,
+    load: loadSourceFile,
     resultFilename: 'result.png',
     saveResult: saveResult,
 }
@@ -88,7 +88,7 @@ function render(){
     composer.render();
 }
 
-function loadTexture(file){
+function loadSourceFile(file){
     const reader = new FileReader();
     reader.onload = (e) => {
         const loader = new THREE.TextureLoader();

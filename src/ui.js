@@ -18,7 +18,7 @@ export function createGUI(config, params){
         invalidFiletypeMessage: 'Invalid file type. Please upload a .jpg, .jpeg, or .png file.',
     }).on('change', (e) => {
         if(e.value){
-            config.loadTexture(e.value);
+            config.load(e.value);
         }
     });
 

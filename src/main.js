@@ -12,6 +12,8 @@ const canvas = document.getElementById('app');
 const uiConfig = {
     file: '',
     loadTexture: loadTexture,
+    resultFilename: 'result.png',
+    saveResult: saveResult,
 }
 
 const pixelate = 4;
@@ -42,7 +44,11 @@ async function preload(){
 
 function setup(){
     const maxCanvasSize = getCanvasSize();
-    renderer = new THREE.WebGLRenderer({ canvas });
+    renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        preserveDrawingBuffer: true,
+        antialias: false,
+    });
     renderer.setSize(maxCanvasSize.width, maxCanvasSize.height);
 
     lowResTarget = new THREE.WebGLRenderTarget(maxCanvasSize.width, maxCanvasSize.height,{
@@ -94,7 +100,7 @@ function setSourceTexture(texture){
 
     const size = getCanvasSize();
     renderer.setSize(size.width, size.height);
-    lowResTarget.setSize(texture.image.width/pixelate, texture.image.height/pixelate);
+    lowResTarget.setSize(Math.floor(texture.image.width/pixelate), Math.floor(texture.image.height/pixelate));
 
     render();
 }
@@ -128,6 +134,51 @@ function getCanvasSize(){
         }
     }
     return {width, height};
+}
+
+async function saveResult(){
+    try{
+        // Data from GPU needs to be drawn to a canvas to ensure proper file encoding
+        const offscreenCanvas = new OffscreenCanvas(lowResTarget.width, lowResTarget.height);
+        const context = offscreenCanvas.getContext('2d');
+
+        const imageData = context.createImageData(lowResTarget.width, lowResTarget.height);
+
+        // Read pixels from gpu
+        await renderer.readRenderTargetPixelsAsync(
+            lowResTarget, 
+            0, 0, 
+            lowResTarget.width, lowResTarget.height, 
+            imageData.data
+        );
+
+        // GPU pixels are flipped along y axis, ImageBitmap allows reversing the flip
+        const imageBitmap = await createImageBitmap(imageData, {imageOrientation: 'flipY'});
+
+        context.drawImage(imageBitmap, 0, 0);
+
+        imageBitmap.close();
+
+        const filename = uiConfig.resultFilename.trim();
+        let mimeType;
+        if(filename.endsWith('.png')){
+            mimeType = 'image/png';
+        }else if(filename.endsWith('.jpg') || filename.endsWith('.jpeg')){
+            mimeType = 'image/jpeg';
+        }else{
+            throw new Error('Invalid file extension. Please use .png, .jpg, or .jpeg');
+        }
+
+        const blob = await offscreenCanvas.convertToBlob({type: mimeType});
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+
+    }catch(e){
+        console.error(e);
+    }
 }
 
 window.addEventListener('resize', () => {

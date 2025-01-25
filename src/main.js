@@ -22,6 +22,16 @@ const params = {
         computeLowResTargetSize();
         render();
     },
+    contrast: 0.0,
+    onContrastChange: (v) => {
+        levelsAdjustPass.uniforms.contrast.value = v.value;
+        render();
+    },
+    brightness: 0.0,
+    onBrightnessChange: (v) => {
+        levelsAdjustPass.uniforms.brightness.value = v.value;
+        render();
+    },
 }
 
 const ditherShader = {
@@ -32,20 +42,36 @@ const ditherShader = {
     fragmentShader: null,
 };
 
+const levelsAdjustShader = {
+    uniforms: {
+        tDiffuse: { value: null },
+        contrast: { value: 0.0 },
+        brightness: { value: 0.0 },
+    },
+    vertexShader: null,
+    fragmentShader: null,
+};
+let levelsAdjustPass;
+
 let renderer, lowResTarget, composer, scene, camera, mesh;
 
 async function preload(){
-    const ditherVert = await fetch('src/glsl/dither-vert.glsl').then(
-        (response) => response.text(),
-        (reason) => console.error(reason)
-    );
-    ditherShader.vertexShader = ditherVert;
-
-    const ditherFrag = await fetch('src/glsl/dither-frag.glsl').then(
-        (response) => response.text(),
-        (reason) => console.error(reason)
-    );
-    ditherShader.fragmentShader = ditherFrag;
+    try{
+        const ditherVert = await fetch('src/glsl/dither-vert.glsl');
+        ditherShader.vertexShader = await ditherVert.text();
+        const ditherFrag = await fetch('src/glsl/dither-frag.glsl');
+        ditherShader.fragmentShader = await ditherFrag.text();
+    }catch(e){
+        console.error(e);
+    }
+     try{
+        const levelsAdjustVert = await fetch('src/glsl/levels-adjust-vert.glsl');
+        levelsAdjustShader.vertexShader = await levelsAdjustVert.text();
+        const levelsAdjustFrag = await fetch('src/glsl/levels-adjust-frag.glsl');
+        levelsAdjustShader.fragmentShader = await levelsAdjustFrag.text();
+    }catch(e){
+        console.error(e);
+    }
 }
 
 function setup(){
@@ -77,9 +103,11 @@ function setup(){
 
     composer = new EffectComposer(renderer, lowResTarget);
     const renderPass = new RenderPass(scene, camera);
+    levelsAdjustPass = new ShaderPass(levelsAdjustShader);
     const ditherPass = new ShaderPass(ditherShader);
     const outputPass = new OutputPass();
     composer.addPass(renderPass);
+    composer.addPass(levelsAdjustPass);
     composer.addPass(ditherPass);
     composer.addPass(outputPass);
 }

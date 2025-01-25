@@ -32,4 +32,14 @@ export function createGUI(config, params){
         max: 16,
         step: 1
     }).on('change', params.onPixelateChange);
+    pane.addBinding(params, 'contrast', {
+        min: -1,
+        max: 1,
+        step: 0.01
+    }).on('change', params.onContrastChange);
+    pane.addBinding(params, 'brightness', {
+        min: -1,
+        max: 1,
+        step: 0.01
+    }).on('change', params.onBrightnessChange);
 }

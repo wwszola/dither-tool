@@ -30,12 +30,6 @@ This application allows users to upload images, apply dithering effects, and adj
 - [ ] UI styling consistent with entire page
 - [ ] Disable/enable dither
 
-## Usage
-
-1. Clone the repository.
-2. Open `index.html` in a web browser.
-3. Use the UI to upload an image, adjust parameters, and save the result.
-
 ## License
 
 This project is licensed under the MIT License.

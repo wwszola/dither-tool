@@ -203,26 +203,30 @@ function getCanvasSize() {
 }
 
 async function saveResult() {
+  // Due to swapping buffers internally used in EffectComposer
+  // the result is not always rendered into lowResTarget passed
+  // in EffectComposer constructor or reset function
+  // Instead to get the result read pixels from target referenced as writeBuffer
+  const outputTarget = composer.writeBuffer;
   try {
     // Data from GPU needs to be drawn to a canvas to ensure proper file encoding
     const offscreenCanvas = new OffscreenCanvas(
-      lowResTarget.width,
-      lowResTarget.height
+      outputTarget.width,
+      outputTarget.height
     );
     const context = offscreenCanvas.getContext("2d");
 
     const imageData = context.createImageData(
-      lowResTarget.width,
-      lowResTarget.height
+      outputTarget.width,
+      outputTarget.height
     );
-
     // Read pixels from gpu
     await renderer.readRenderTargetPixelsAsync(
-      lowResTarget,
+      outputTarget,
       0,
       0,
-      lowResTarget.width,
-      lowResTarget.height,
+      outputTarget.width,
+      outputTarget.height,
       imageData.data
     );
 

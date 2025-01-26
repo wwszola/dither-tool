@@ -11,7 +11,7 @@ const canvas = document.getElementById("app");
 
 const uiConfig = {
   sourceFile: "",
-  onUpload: loadSourceFile,
+  onUpload: loadSourceImage,
   resultFilename: "result.png",
   onSave: saveResult,
 };
@@ -124,7 +124,7 @@ function render() {
   composer.render();
 }
 
-function loadSourceFile(file) {
+function loadSourceImage(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const loader = new THREE.TextureLoader();

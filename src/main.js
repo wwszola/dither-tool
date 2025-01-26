@@ -32,11 +32,16 @@ const params = {
     levelsAdjustPass.uniforms.brightness.value = v.value;
     render();
   },
+  onDitherSizeChange: (v) => {
+    ditherPass.uniforms.ditherSize.value = v.value;
+    render();
+  },
 };
 
 const ditherShader = {
   uniforms: {
     tDiffuse: { value: null },
+    ditherSize: { value: 2 },
   },
   vertexShader: null,
   fragmentShader: null,
@@ -51,7 +56,8 @@ const levelsAdjustShader = {
   vertexShader: null,
   fragmentShader: null,
 };
-let levelsAdjustPass;
+
+let ditherPass, levelsAdjustPass;
 
 let renderer, lowResTarget, composer, scene, camera, mesh;
 
@@ -108,7 +114,7 @@ function setup() {
   composer = new EffectComposer(renderer, lowResTarget);
   const renderPass = new RenderPass(scene, camera);
   levelsAdjustPass = new ShaderPass(levelsAdjustShader);
-  const ditherPass = new ShaderPass(ditherShader);
+  ditherPass = new ShaderPass(ditherShader);
   const outputPass = new OutputPass();
   composer.addPass(renderPass);
   composer.addPass(levelsAdjustPass);

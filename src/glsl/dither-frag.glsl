@@ -1,10 +1,11 @@
 varying vec2 vUv;
 
 uniform sampler2D tDiffuse;
+uniform int ditherSize;
 
 //const vec3 lumaFactor = vec3(0.2126, 0.7152, 0.0722);
-//const vec3 lumaFactor = vec3(0.299, 0.587, 0.114);
-const vec3 lumaFactor = vec3(0.3333, 0.3333, 0.3333);
+const vec3 lumaFactor = vec3(0.299, 0.587, 0.114);
+//const vec3 lumaFactor = vec3(0.3333, 0.3333, 0.3333);
 
 const int ditherMatrix2x2[4] = int[](
     0,  3,  
@@ -65,15 +66,23 @@ float dither8x8(vec2 coord, float luma) {
 void main() {
     vec4 color = texture2D(tDiffuse, vUv);
     float luma = dot(color.rgb, lumaFactor);
-    float dither = dither8x8(gl_FragCoord.xy, luma);
+    float dither = 0.0;
+    if(ditherSize == 2){
+        dither = dither2x2(gl_FragCoord.xy, luma);
+    }else if(ditherSize == 4){
+        dither = dither4x4(gl_FragCoord.xy, luma);
+    }else if(ditherSize == 8){
+        dither = dither8x8(gl_FragCoord.xy, luma);        
+    }
 
-    vec4 outColor = vec4(
-        color.r * dither,
-        color.g * dither,
-        color.b * dither,
-        1.0
-    );
+    gl_FragColor = vec4(vec3(dither), 1.0);
 
-    gl_FragColor = outColor;
-    //gl_FragColor = vec4(vec3(dither), 1.0);
+    // vec4 outColor = vec4(
+    //     color.r * dither,
+    //     color.g * dither,
+    //     color.b * dither,
+    //     1.0
+    // );
+
+    // gl_FragColor = outColor;
 }

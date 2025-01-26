@@ -53,4 +53,16 @@ export function createGUI(config, params) {
       step: 0.01,
     })
     .on("change", params.onBrightnessChange);
+  pane
+    .addBlade({
+      view: "list",
+      label: "Dither size",
+      options: [
+        { text: "2x2", value: 2 },
+        { text: "4x4", value: 4 },
+        { text: "8x8", value: 8 },
+      ],
+      value: 2,
+    })
+    .on("change", params.onDitherSizeChange);
 }

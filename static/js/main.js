@@ -34,6 +34,10 @@ const params = {
   onDitherSizeChange: (v) => {
     ditherPass.uniforms.ditherSize.value = v.value;
   },
+  invert: false,
+  onInvertChange: (v) => {
+    levelsAdjustPass.uniforms.invert.value = Number(v.value);
+  },
 };
 
 const ditherShader = {
@@ -50,6 +54,7 @@ const levelsAdjustShader = {
     tDiffuse: { value: null },
     contrast: { value: 0.0 },
     brightness: { value: 0.0 },
+    invert: { value: 0 },
   },
   vertexShader: null,
   fragmentShader: null,

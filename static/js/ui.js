@@ -84,6 +84,9 @@ function createParamsFolder(pane, params) {
       ],
     })
     .on("change", params.onDitherSizeChange);
+  paramsFolder
+    .addBinding(params, "invert", { label: "Invert" })
+    .on("change", params.onInvertChange);
 
   defaultParamsFolderState = paramsFolder.exportState();
   return paramsFolder;

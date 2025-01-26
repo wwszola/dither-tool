@@ -61,17 +61,17 @@ let renderer, lowResTarget, composer, scene, camera, mesh;
 
 async function preload() {
   try {
-    const ditherVert = await fetch("src/glsl/dither-vert.glsl");
+    const ditherVert = await fetch("static/glsl/dither-vert.glsl");
     ditherShader.vertexShader = await ditherVert.text();
-    const ditherFrag = await fetch("src/glsl/dither-frag.glsl");
+    const ditherFrag = await fetch("static/glsl/dither-frag.glsl");
     ditherShader.fragmentShader = await ditherFrag.text();
   } catch (e) {
     console.error(e);
   }
   try {
-    const levelsAdjustVert = await fetch("src/glsl/levels-adjust-vert.glsl");
+    const levelsAdjustVert = await fetch("static/glsl/levels-adjust-vert.glsl");
     levelsAdjustShader.vertexShader = await levelsAdjustVert.text();
-    const levelsAdjustFrag = await fetch("src/glsl/levels-adjust-frag.glsl");
+    const levelsAdjustFrag = await fetch("static/glsl/levels-adjust-frag.glsl");
     levelsAdjustShader.fragmentShader = await levelsAdjustFrag.text();
   } catch (e) {
     console.error(e);

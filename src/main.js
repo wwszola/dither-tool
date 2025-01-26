@@ -10,31 +10,29 @@ import { createGUI } from "./ui.js";
 const canvas = document.getElementById("app");
 
 const uiConfig = {
-  file: "",
-  load: loadSourceFile,
+  sourceFile: "",
+  onUpload: loadSourceFile,
   resultFilename: "result.png",
-  saveResult: saveResult,
+  onSave: saveResult,
 };
 
 const params = {
+  onChange: (v) => render(),
   pixelate: 1,
   onPixelateChange: (v) => {
     computeLowResTargetSize();
-    render();
   },
   contrast: 0.0,
   onContrastChange: (v) => {
     levelsAdjustPass.uniforms.contrast.value = v.value;
-    render();
   },
   brightness: 0.0,
   onBrightnessChange: (v) => {
     levelsAdjustPass.uniforms.brightness.value = v.value;
-    render();
   },
+  ditherSize: 2,
   onDitherSizeChange: (v) => {
     ditherPass.uniforms.ditherSize.value = v.value;
-    render();
   },
 };
 

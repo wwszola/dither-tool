@@ -3,14 +3,17 @@ import * as TweakpaneFileImportPlugin from "tweakpane-plugin-file-import";
 
 const uiContainer = document.getElementById("ui-container");
 
-let pane;
-
-export function createGUI(config, params) {
-  pane = new Pane({
+export function createUI(config, params) {
+  const pane = new Pane({
     container: uiContainer,
   });
   pane.registerPlugin(TweakpaneFileImportPlugin);
 
+  createFileFolder(pane, config);
+  createParamsFolder(pane, params);
+}
+
+function createFileFolder(pane, config) {
   // File: upload, save
   const fileFolder = pane.addFolder({ title: "File", expanded: true });
   fileFolder
@@ -32,7 +35,10 @@ export function createGUI(config, params) {
     label: "Output filename",
   });
   fileFolder.addButton({ title: "Save" }).on("click", config.onSave);
+  return fileFolder;
+}
 
+function createParamsFolder(pane, params) {
   // Params: controlling effects
   const paramsFolder = pane
     .addFolder({ title: "Parameters", expanded: true })
@@ -81,4 +87,5 @@ export function createGUI(config, params) {
     .on("change", params.onDitherSizeChange);
 
   defaultParamsFolderState = paramsFolder.exportState();
+  return paramsFolder;
 }

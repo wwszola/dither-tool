@@ -5,7 +5,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
-import { createGUI } from "./ui.js";
+import { createUI } from "./ui.js";
 
 const canvas = document.getElementById("app");
 
@@ -261,5 +261,5 @@ window.addEventListener("resize", () => {
 
 await preload();
 setup();
-createGUI(uiConfig, params);
+createUI(uiConfig, params);
 render();

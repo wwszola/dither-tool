@@ -29,6 +29,11 @@ This application allows users to upload images, apply dithering effects, and adj
 - [x] UI clean up
 - [ ] UI styling consistent with entire page
 - [ ] Disable/enable dither
+- [ ] Decouple editor from actual image processing
+- [ ] Add some information with logging
+- [ ] Create output filename from uploaded filename
+- [ ] Output size choice: original, pixelated. Show resolution in gui
+- [ ] Pixelate should be part of "general params" ?
 
 ## License
 

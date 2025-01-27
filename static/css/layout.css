@@ -40,7 +40,7 @@ footer {
   padding: 1rem 0;
 }
 
-#app-container {
+#editor-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,6 +53,6 @@ canvas {
   height: auto;
 }
 
-#ui-container {
+#gui-container {
   padding: 1rem;
 }

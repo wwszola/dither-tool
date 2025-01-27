@@ -2,8 +2,8 @@ import { Editor } from "./editor.js";
 import { GUI } from "./gui.js";
 import { Controller } from "./controller.js";
 
-const editor = new Editor("app-container", "app");
-const gui = new GUI("ui-container");
+const editor = new Editor("editor-container", "editor");
+const gui = new GUI("gui-container");
 const controller = new Controller(editor, gui);
 
 (async () => {

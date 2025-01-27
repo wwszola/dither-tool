@@ -83,7 +83,6 @@ export class Editor {
     this.lowResTarget = new THREE.WebGLRenderTarget(16, 16, {
       magFilter: THREE.NearestFilter,
       minFilter: THREE.NearestFilter,
-      type: THREE.HalfFloatType,
     });
 
     this.scene = new THREE.Scene();
@@ -169,7 +168,7 @@ export class Editor {
 
   setSourceTexture(texture) {
     if (this.mesh.material.map) {
-      mesh.material.map.dispose();
+      this.mesh.material.map.dispose();
     }
     this.mesh.material.map = texture;
     this.mesh.material.needsUpdate = true;
@@ -189,8 +188,8 @@ export class Editor {
   }
 
   // Update parameters
-  updateParams(newParams) {
-    for (const [key, value] of newParams) {
+  updateParameters(newParams) {
+    for (const [key, value] of Object.entries(newParams)) {
       switch (key) {
         case "pixelate":
           this.parameters.pixelate = value;
@@ -208,6 +207,7 @@ export class Editor {
         case "invert":
           this.parameters.invert = value;
           this.passes.levelsAdjust.uniforms.invert.value = Number(value);
+          break;
         default:
           console.log(`No matching parameter key=${key} value=${value}`);
       }
@@ -257,7 +257,7 @@ export class Editor {
         outputTarget.height
       );
       // Read pixels from gpu
-      await renderer.readRenderTargetPixelsAsync(
+      await this.renderer.readRenderTargetPixelsAsync(
         outputTarget,
         0,
         0,

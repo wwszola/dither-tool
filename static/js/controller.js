@@ -10,7 +10,6 @@ export class Controller {
   // Initialize the application
   async initialize() {
     try {
-      debugger;
       await this.editor.preloadShaders();
 
       // Initialize the WebGL renderer and rendering pipeline

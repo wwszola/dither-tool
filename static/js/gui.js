@@ -29,7 +29,7 @@ export class GUI {
           "Invalid file type. Please upload a .jpg, .jpeg, or .png file.",
       })
       .on("change", (ev) => {
-        config.onUpload(e.value);
+        config.onUpload(ev.value);
       });
 
     fileFolder.addBlade({ view: "separator" });
@@ -47,7 +47,11 @@ export class GUI {
   createParametersControls(config) {
     const parametersFolder = this.pane
       .addFolder({ title: "Parameters", expanded: true })
-      .on("change", config.onChange);
+      .on("change", (ev) => {
+        const key = ev.target.controller.value.binding.target.key;
+        const value = ev.value;
+        config.onChange(key, value);
+      });
 
     // default state exported after parametersFolder construction
     let defaultState = undefined;

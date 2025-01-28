@@ -255,8 +255,7 @@ export class Editor {
     }
   }
 
-  // Save the result as an image file
-  async saveOutput(outputFilename, keepOriginalSize = false) {
+  async getOutputBlob(mimeType, keepOriginalSize = false) {
     // Due to swapping buffers internally used in EffectComposer
     // the result is not always rendered into lowResTarget passed
     // in EffectComposer constructor or reset function
@@ -297,24 +296,8 @@ export class Editor {
 
       imageBitmap.close();
 
-      const filename = outputFilename;
-      let mimeType;
-      if (filename.endsWith(".png")) {
-        mimeType = "image/png";
-      } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
-        mimeType = "image/jpeg";
-      } else {
-        throw new Error(
-          "Invalid file extension. Please use .png, .jpg, or .jpeg"
-        );
-      }
-
       const blob = await offscreenCanvas.convertToBlob({ type: mimeType });
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      link.click();
+      return blob;
     } catch (e) {
       console.error(e);
     }

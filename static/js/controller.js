@@ -1,7 +1,8 @@
 export class Controller {
-  constructor(editor, gui) {
+  constructor(editor, gui, preview) {
     this.editor = editor;
     this.gui = gui;
+    this.preview = preview;
 
     this.fileFolderConfig = null;
     this.parametersFolderConfig = null;
@@ -37,6 +38,13 @@ export class Controller {
 
       // Bind resize event to handle canvas resizing
       window.addEventListener("resize", this.handleResize.bind(this));
+
+      this.editor.canvas.addEventListener(
+        "click",
+        this.handlePreviewOpen.bind(this)
+      );
+
+      this.preview.initialize();
 
       this.editor.render();
 
@@ -85,11 +93,40 @@ export class Controller {
     this.gui.updateParameters({ outputSizeString: outputSizeString });
   }
 
+  getOutputMimeType() {
+    const filename = this.fileFolderConfig.outputFilename.trim();
+    if (filename.endsWith(".png")) {
+      return "image/png";
+    } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+      return "image/jpeg";
+    } else {
+      throw new Error(
+        "Invalid file extension. Please use .png, .jpg, or .jpeg"
+      );
+    }
+  }
+
   // Trigger saving the result
   handleSaveOutput() {
-    this.editor.saveOutput(
-      this.fileFolderConfig.outputFilename.trim(),
-      this.fileFolderConfig.outputSizeMode === "original"
-    );
+    const mimeType = this.getOutputMimeType();
+    const keepOriginalSize =
+      this.fileFolderConfig.outputSizeMode === "original";
+    this.editor.getOutputBlob(mimeType, keepOriginalSize).then((blob) => {
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = filename;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
+  }
+
+  handlePreviewOpen() {
+    const mimeType = this.getOutputMimeType();
+    const keepOriginalSize =
+      this.fileFolderConfig.outputSizeMode === "original";
+    this.editor.getOutputBlob(mimeType, keepOriginalSize).then((blob) => {
+      this.preview.open(blob);
+    });
   }
 }

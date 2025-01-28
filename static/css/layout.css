@@ -7,7 +7,7 @@
 html,
 body {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 body {
@@ -55,4 +55,22 @@ canvas {
 
 #gui-container {
   padding: 1rem;
+}
+
+#preview-container {
+  display: none;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100svw;
+  height: 100svh;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+#preview {
+  display: block;
+  object-fit: contain;
+  max-width: 90%;
+  max-height: 90%;
 }

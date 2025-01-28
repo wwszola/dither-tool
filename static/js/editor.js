@@ -237,18 +237,37 @@ export class Editor {
     reader.readAsDataURL(file);
   }
 
+  getOutputSize(keepOriginal = false) {
+    const sourceTexture = this.mesh?.material?.map;
+    if (!sourceTexture) {
+      return undefined;
+    }
+    if (keepOriginal) {
+      return {
+        width: sourceTexture.image.width,
+        height: sourceTexture.image.height,
+      };
+    } else {
+      return {
+        width: this.composer.writeBuffer.width,
+        height: this.composer.writeBuffer.height,
+      };
+    }
+  }
+
   // Save the result as an image file
-  async saveOutput(outputFilename) {
+  async saveOutput(outputFilename, keepOriginalSize = false) {
     // Due to swapping buffers internally used in EffectComposer
     // the result is not always rendered into lowResTarget passed
     // in EffectComposer constructor or reset function
     // Instead to get the result read pixels from target referenced as writeBuffer
     const outputTarget = this.composer.writeBuffer;
+    const outputSize = this.getOutputSize(keepOriginalSize);
     try {
       // Data from GPU needs to be drawn to a canvas to ensure proper file encoding
       const offscreenCanvas = new OffscreenCanvas(
-        outputTarget.width,
-        outputTarget.height
+        outputSize.width,
+        outputSize.height
       );
       const context = offscreenCanvas.getContext("2d");
 
@@ -269,6 +288,9 @@ export class Editor {
       // GPU pixels are flipped along y axis, ImageBitmap allows reversing the flip
       const imageBitmap = await createImageBitmap(imageData, {
         imageOrientation: "flipY",
+        resizeWidth: outputSize.width,
+        resizeHeight: outputSize.height,
+        resizeQuality: "pixelated",
       });
 
       context.drawImage(imageBitmap, 0, 0);

@@ -48,6 +48,26 @@ export class GUI {
     );
     this.updatableBindings.outputFilename = outputFilenameBinding;
 
+    const outputSizeStringBinding = fileFolder.addBinding(
+      config,
+      "outputSizeString",
+      {
+        label: "Output size",
+        disabled: true,
+      }
+    );
+    this.updatableBindings.outputSizeString = outputSizeStringBinding;
+
+    fileFolder
+      .addBinding(config, "outputSizeMode", {
+        label: "Output size mode",
+        options: {
+          Pixelated: "pixelated",
+          Original: "original",
+        },
+      })
+      .on("change", config.onOutputSizeModeChange);
+
     fileFolder.addButton({ title: "Save" }).on("click", (ev) => {
       config.onSave();
     });
@@ -110,6 +130,10 @@ export class GUI {
         case "outputFilename":
           this.fileFolderConfig.outputFilename = value;
           this.updatableBindings.outputFilename.refresh();
+          break;
+        case "outputSizeString":
+          this.fileFolderConfig.outputSizeString = value;
+          this.updatableBindings.outputSizeString.refresh();
           break;
         default:
           console.log(`No matching parameter key=${key} value=${value}`);

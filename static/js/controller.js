@@ -20,6 +20,9 @@ export class Controller {
         sourceFilename: "",
         onUpload: this.handleFileUpload.bind(this),
         outputFilename: "result.png",
+        outputSizeString: "16x16px",
+        outputSizeMode: "pixelated",
+        onOutputSizeModeChange: this.handleOutputSizeModeChange.bind(this),
         onSave: this.handleSaveOutput.bind(this),
       };
 
@@ -52,6 +55,8 @@ export class Controller {
       const newFilename =
         filenameParts[0] + "-dither." + filenameParts[filenameParts.length - 1];
       this.gui.updateParameters({ outputFilename: newFilename });
+      // Show correct output size
+      this.handleOutputSizeModeChange();
     });
   }
 
@@ -61,6 +66,9 @@ export class Controller {
     newParams[key] = value;
     this.editor.updateParameters(newParams);
     this.editor.render();
+    if (key === "pixelate") {
+      this.handleOutputSizeModeChange();
+    }
   }
 
   // Handle canvas resizing
@@ -69,8 +77,19 @@ export class Controller {
     this.editor.render();
   }
 
+  handleOutputSizeModeChange() {
+    const outputSize = this.editor.getOutputSize(
+      this.fileFolderConfig.outputSizeMode === "original"
+    );
+    const outputSizeString = `${outputSize.width}x${outputSize.height}px`;
+    this.gui.updateParameters({ outputSizeString: outputSizeString });
+  }
+
   // Trigger saving the result
   handleSaveOutput() {
-    this.editor.saveOutput(this.fileFolderConfig.outputFilename.trim());
+    this.editor.saveOutput(
+      this.fileFolderConfig.outputFilename.trim(),
+      this.fileFolderConfig.outputSizeMode === "original"
+    );
   }
 }

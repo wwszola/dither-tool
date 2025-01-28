@@ -47,6 +47,11 @@ export class Controller {
   handleFileUpload(file) {
     this.editor.loadSourceImage(file, () => {
       this.editor.render();
+      // Default output filename is generated from uploaded filename
+      const filenameParts = file.name.split(".");
+      const newFilename =
+        filenameParts[0] + "-dither." + filenameParts[filenameParts.length - 1];
+      this.gui.updateParameters({ outputFilename: newFilename });
     });
   }
 

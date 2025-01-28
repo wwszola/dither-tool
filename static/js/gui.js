@@ -5,6 +5,11 @@ export class GUI {
   constructor(guiContainerId) {
     this.guiContainer = document.getElementById(guiContainerId);
     this.pane = null;
+
+    this.fileFolderConfig = null;
+    this.parametersFolderConfig = null;
+
+    this.updatableBindings = {};
   }
 
   // Create and set up the UI
@@ -34,13 +39,20 @@ export class GUI {
 
     fileFolder.addBlade({ view: "separator" });
 
-    fileFolder.addBinding(config, "outputFilename", {
-      label: "Output filename",
-    });
+    const outputFilenameBinding = fileFolder.addBinding(
+      config,
+      "outputFilename",
+      {
+        label: "Output filename",
+      }
+    );
+    this.updatableBindings.outputFilename = outputFilenameBinding;
 
     fileFolder.addButton({ title: "Save" }).on("click", (ev) => {
       config.onSave();
     });
+
+    this.fileFolderConfig = config;
   }
 
   // Bind parameter controls
@@ -88,8 +100,20 @@ export class GUI {
     parametersFolder.addBinding(config, "invert", { label: "Invert" });
 
     defaultState = parametersFolder.exportState();
+
+    this.parametersFolderConfig = config;
   }
 
-  // Update the UI when parameters change
-  updateUI(newParams) {}
+  updateParameters(newParams) {
+    for (const [key, value] of Object.entries(newParams)) {
+      switch (key) {
+        case "outputFilename":
+          this.fileFolderConfig.outputFilename = value;
+          this.updatableBindings.outputFilename.refresh();
+          break;
+        default:
+          console.log(`No matching parameter key=${key} value=${value}`);
+      }
+    }
+  }
 }

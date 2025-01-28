@@ -2,6 +2,10 @@
 
 A web-based application for applying ordered Bayer dithering to images.
 
+## [Check it out!](https://wwszola.github.io/dither-tool)
+
+Deployed on GitHub Pages
+
 ## Summary
 
 This application allows users to upload images, apply dithering effects, and adjust various image parameters such as contrast, brightness, and pixelation. The app uses WebGL and the Three.js library for rendering and processing images.
@@ -18,15 +22,15 @@ This application allows users to upload images, apply dithering effects, and adj
 - [x] Save image into PNG or JPG
 - [x] Choose threshold map
 - [x] Adjust contrast and brightness
+- [ ] Keep color mode
+- [ ] Quantize color
 
 ## TODO
 
-- [x] UI reset params
-- [x] UI clean up
-- [ ] UI styling consistent with entire page
+- [ ] Styling
+- - [ ] Mobile friendly
+- - [ ] Tweakpane gui colors and fonts consistent
 - [ ] Add some information with logging
-- [ ] Create output filename from uploaded filename
-- [ ] Output size choice: original, pixelated. Show resolution in gui
 
 ## License
 

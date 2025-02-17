@@ -22,8 +22,8 @@ This application allows users to upload images, apply dithering effects, and adj
 - [x] Save image into PNG or JPG
 - [x] Choose threshold map
 - [x] Adjust contrast and brightness
-- [ ] Keep color mode
-- [ ] Quantize color
+- [x] Keep color mode
+- [x] Quantize color
 
 ## TODO
 
@@ -31,6 +31,8 @@ This application allows users to upload images, apply dithering effects, and adj
 - - [ ] Mobile friendly
 - - [ ] Tweakpane gui colors and fonts consistent
 - [ ] Add some information with logging
+- [ ] Pixel size warning
+- [ ] Magnifying glass
 
 ## License
 

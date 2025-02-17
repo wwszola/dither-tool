@@ -14,8 +14,9 @@ export class Editor {
       pixelate: 1,
       contrast: 0.0,
       brightness: 0.0,
-      ditherSize: 2,
       invert: false,
+      ditherToggle: true,
+      ditherSize: 2,
       quantize: 2,
     };
 
@@ -201,6 +202,10 @@ export class Editor {
         case "quantize":
           this.parameters[key] = value;
           this.passes.dither.uniforms[key].value = value;
+          break;
+        case "ditherToggle":
+          this.parameters.ditherToggle = value;
+          this.passes.dither.enabled = value;
           break;
         case "contrast":
         case "brightness":

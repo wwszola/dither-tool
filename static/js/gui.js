@@ -112,6 +112,8 @@ export class GUI {
     });
     parametersFolder.addBinding(config, "invert", { label: "Invert" });
     parametersFolder.addBlade({ view: "separator" });
+
+    parametersFolder.addBinding(config, "ditherToggle", { label: "Dither" });
     parametersFolder.addBinding(config, "ditherSize", {
       label: "Dither size",
       options: [

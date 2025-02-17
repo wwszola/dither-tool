@@ -109,6 +109,7 @@ export class Controller {
   // Trigger saving the result
   handleSaveOutput() {
     const mimeType = this.getOutputMimeType();
+    const filename = this.fileFolderConfig.outputFilename.trim();
     const keepOriginalSize =
       this.fileFolderConfig.outputSizeMode === "original";
     this.editor.getOutputBlob(mimeType, keepOriginalSize).then((blob) => {

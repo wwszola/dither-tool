@@ -114,6 +114,13 @@ export class GUI {
     parametersFolder.addBlade({ view: "separator" });
 
     parametersFolder.addBinding(config, "ditherToggle", { label: "Dither" });
+    parametersFolder.addBinding(config, "quantize", {
+      label: "Quantize",
+      min: 2,
+      max: 16,
+      step: 1,
+    });
+    parametersFolder.addBinding(config, "colorMode", { label: "Color" });
     parametersFolder.addBinding(config, "ditherSize", {
       label: "Dither size",
       options: [
@@ -121,12 +128,6 @@ export class GUI {
         { text: "4x4", value: 4 },
         { text: "8x8", value: 8 },
       ],
-    });
-    parametersFolder.addBinding(config, "quantize", {
-      label: "Quantize",
-      min: 2,
-      max: 16,
-      step: 1,
     });
 
     defaultState = parametersFolder.exportState();

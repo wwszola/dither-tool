@@ -3,6 +3,7 @@ varying vec2 vUv;
 uniform sampler2D tDiffuse;
 uniform int ditherSize;
 uniform int quantize;
+uniform int colorMode;
 
 //const vec3 lumaFactor = vec3(0.2126, 0.7152, 0.0722);
 const vec3 lumaFactor = vec3(0.299, 0.587, 0.114);
@@ -50,31 +51,29 @@ float thresholdMap(vec2 coord, float size){
     return threshold;
 }
 
-float ditherQuantize(vec2 coord, float luma, float size, float quantize){
+vec3 ditherQuantize(vec2 coord, vec3 color, float size, float quantize){
     float threshold = thresholdMap(coord, size);
-    float quantized = floor(luma * (quantize - 1.0) + threshold);
+    vec3 quantized = floor(color * (quantize - 1.0) + threshold);
     quantized = quantized / (quantize - 1.0);
     return quantized;
 }
 
 void main() {
     vec4 color = texture2D(tDiffuse, vUv);
-    float luma = dot(color.rgb, lumaFactor);
-    float dither = ditherQuantize(
+    float luma = 0.0;
+    vec3 dither = vec3(0.0);
+
+    if(colorMode == 0){
+        luma = dot(color.rgb, lumaFactor);
+        color.rgb = vec3(luma);
+    }
+
+    dither = ditherQuantize(
         gl_FragCoord.xy,
-        luma,
+        color.rgb,
         float(ditherSize),
         float(quantize)
     );
-
-    gl_FragColor = vec4(vec3(dither), 1.0);
-
-    // vec4 outColor = vec4(
-    //     color.r * dither,
-    //     color.g * dither,
-    //     color.b * dither,
-    //     1.0
-    // );
-
-    // gl_FragColor = outColor;
+    
+    gl_FragColor = vec4(dither, 1.0);
 }

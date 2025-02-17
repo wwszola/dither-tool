@@ -16,8 +16,9 @@ export class Editor {
       brightness: 0.0,
       invert: false,
       ditherToggle: true,
-      ditherSize: 2,
       quantize: 2,
+      colorMode: false,
+      ditherSize: 2,
     };
 
     this.ditherShader = {
@@ -25,6 +26,7 @@ export class Editor {
         tDiffuse: { value: null },
         ditherSize: { value: 2 },
         quantize: { value: 2 },
+        colorMode: { value: 0 },
       },
       vertexShader: null,
       fragmentShader: null,
@@ -206,6 +208,10 @@ export class Editor {
         case "ditherToggle":
           this.parameters.ditherToggle = value;
           this.passes.dither.enabled = value;
+          break;
+        case "colorMode":
+          this.parameters.colorMode = value;
+          this.passes.dither.uniforms.colorMode.value = Number(value);
           break;
         case "contrast":
         case "brightness":

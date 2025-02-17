@@ -90,6 +90,7 @@ export class GUI {
     parametersFolder.addButton({ title: "Reset" }).on("click", () => {
       parametersFolder.importState(defaultState);
     });
+    parametersFolder.addBlade({ view: "separator" });
 
     parametersFolder.addBinding(config, "pixelate", {
       label: "Pixelate",
@@ -109,6 +110,8 @@ export class GUI {
       max: 1,
       step: 0.01,
     });
+    parametersFolder.addBinding(config, "invert", { label: "Invert" });
+    parametersFolder.addBlade({ view: "separator" });
     parametersFolder.addBinding(config, "ditherSize", {
       label: "Dither size",
       options: [
@@ -117,7 +120,12 @@ export class GUI {
         { text: "8x8", value: 8 },
       ],
     });
-    parametersFolder.addBinding(config, "invert", { label: "Invert" });
+    parametersFolder.addBinding(config, "quantize", {
+      label: "Quantize",
+      min: 2,
+      max: 16,
+      step: 1,
+    });
 
     defaultState = parametersFolder.exportState();
 

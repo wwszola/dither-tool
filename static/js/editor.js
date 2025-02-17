@@ -16,12 +16,14 @@ export class Editor {
       brightness: 0.0,
       ditherSize: 2,
       invert: false,
+      quantize: 2,
     };
 
     this.ditherShader = {
       uniforms: {
         tDiffuse: { value: null },
         ditherSize: { value: 2 },
+        quantize: { value: 2 },
       },
       vertexShader: null,
       fragmentShader: null,
@@ -196,8 +198,9 @@ export class Editor {
           this.computeComposerSize();
           break;
         case "ditherSize":
-          this.parameters.ditherSize = value;
-          this.passes.dither.uniforms.ditherSize.value = value;
+        case "quantize":
+          this.parameters[key] = value;
+          this.passes.dither.uniforms[key].value = value;
           break;
         case "contrast":
         case "brightness":

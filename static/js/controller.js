@@ -46,6 +46,8 @@ export class Controller {
 
       this.preview.initialize();
 
+      this.fetchAndUpload("static/media/grayscale_256x256.png");
+
       this.editor.render();
 
       console.log("Controller initialized successfully.");
@@ -66,6 +68,21 @@ export class Controller {
       // Show correct output size
       this.handleOutputSizeModeChange();
     });
+  }
+
+  // Fetch an image from a URL and upload it
+  async fetchAndUpload(imageUrl) {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      const filename = imageUrl.split("/").pop();
+      const file = new File([blob], filename, { type: blob.type });
+
+      this.handleFileUpload(file);
+    } catch (error) {
+      console.error("Error fetching the image:", error);
+    }
   }
 
   // Handle parameter changes

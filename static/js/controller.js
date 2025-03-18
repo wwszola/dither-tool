@@ -63,8 +63,8 @@ export class Controller {
       this.editor.render();
       // Default output filename is generated from uploaded filename
       const filenameParts = file.name.split(".");
-      const newFilename =
-        filenameParts[0] + "-dither." + filenameParts[filenameParts.length - 1];
+      const extension = "png";
+      const newFilename = filenameParts[0] + "-dither." + extension;
       this.gui.updateParameters({ outputFilename: newFilename });
       // Show correct output size
       this.handleOutputSizeChange();

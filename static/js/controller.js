@@ -115,13 +115,16 @@ export class Controller {
 
   getOutputMimeType() {
     const filename = this.fileFolderConfig.outputFilename.trim();
-    if (filename.endsWith(".png")) {
+    const extension = filename.split(".").pop().toLowerCase();
+    if (extension === "png") {
       return "image/png";
-    } else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+    } else if (extension === "jpg" || extension === "jpeg") {
       return "image/jpeg";
+    } else if (extension === "gif") {
+      return "image/gif";
     } else {
       throw new Error(
-        "Invalid file extension. Please use .png, .jpg, or .jpeg"
+        "Invalid file extension. Please use .png, .jpg, .jpeg or .gif."
       );
     }
   }

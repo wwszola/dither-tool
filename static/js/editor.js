@@ -251,7 +251,7 @@ export class Editor {
     reader.readAsDataURL(file);
   }
 
-  getOutputSize(keepOriginal = false) {
+  getOutputSize(keepOriginal = false, scale = 1) {
     const sourceTexture = this.mesh?.material?.map;
     if (!sourceTexture) {
       return undefined;
@@ -263,19 +263,19 @@ export class Editor {
       };
     } else {
       return {
-        width: this.composer.writeBuffer.width,
-        height: this.composer.writeBuffer.height,
+        width: this.composer.writeBuffer.width * scale,
+        height: this.composer.writeBuffer.height * scale,
       };
     }
   }
 
-  async getOutputBlob(mimeType, keepOriginalSize = false) {
+  async getOutputBlob(mimeType, keepOriginalSize = false, scale = 1) {
     // Due to swapping buffers internally used in EffectComposer
     // the result is not always rendered into lowResTarget passed
     // in EffectComposer constructor or reset function
     // Instead to get the result read pixels from target referenced as writeBuffer
     const outputTarget = this.composer.writeBuffer;
-    const outputSize = this.getOutputSize(keepOriginalSize);
+    const outputSize = this.getOutputSize(keepOriginalSize, scale);
     try {
       // Data from GPU needs to be drawn to a canvas to ensure proper file encoding
       const offscreenCanvas = new OffscreenCanvas(

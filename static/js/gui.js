@@ -10,6 +10,7 @@ export class GUI {
     this.parametersFolderConfig = null;
 
     this.updatableBindings = {};
+    this.hidableBindings = {};
   }
 
   // Create and set up the UI
@@ -66,7 +67,17 @@ export class GUI {
           Original: "original",
         },
       })
-      .on("change", config.onOutputSizeModeChange);
+      .on("change", config.onOutputSizeChange);
+
+    const outputSizeScaleBinding = fileFolder
+      .addBinding(config, "outputSizeScale", {
+        label: "Output size scale",
+        min: 1,
+        max: 32,
+        step: 1,
+      })
+      .on("change", config.onOutputSizeChange);
+    this.hidableBindings.outputSizeScale = outputSizeScaleBinding;
 
     fileFolder.addButton({ title: "Save" }).on("click", (ev) => {
       config.onSave();
@@ -149,6 +160,17 @@ export class GUI {
         default:
           console.log(`No matching parameter key=${key} value=${value}`);
       }
+    }
+  }
+
+  setHiddenProperty(binding, value) {
+    value = Boolean(value);
+    switch (binding) {
+      case "outputSizeScale":
+        this.hidableBindings.outputSizeScale.hidden = value;
+        break;
+      default:
+        console.log(`No matching binding=${binding} value=${value}`);
     }
   }
 }

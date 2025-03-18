@@ -23,7 +23,8 @@ export class Controller {
         outputFilename: "result.png",
         outputSizeString: "16x16px",
         outputSizeMode: "pixelated",
-        onOutputSizeModeChange: this.handleOutputSizeModeChange.bind(this),
+        outputSizeScale: 1,
+        onOutputSizeChange: this.handleOutputSizeChange.bind(this),
         onSave: this.handleSaveOutput.bind(this),
       };
 
@@ -66,7 +67,7 @@ export class Controller {
         filenameParts[0] + "-dither." + filenameParts[filenameParts.length - 1];
       this.gui.updateParameters({ outputFilename: newFilename });
       // Show correct output size
-      this.handleOutputSizeModeChange();
+      this.handleOutputSizeChange();
     });
   }
 
@@ -92,7 +93,7 @@ export class Controller {
     this.editor.updateParameters(newParams);
     this.editor.render();
     if (key === "pixelate") {
-      this.handleOutputSizeModeChange();
+      this.handleOutputSizeChange();
     }
   }
 
@@ -102,12 +103,14 @@ export class Controller {
     this.editor.render();
   }
 
-  handleOutputSizeModeChange() {
-    const outputSize = this.editor.getOutputSize(
-      this.fileFolderConfig.outputSizeMode === "original"
-    );
+  handleOutputSizeChange() {
+    const keepOriginalSize =
+      this.fileFolderConfig.outputSizeMode === "original";
+    const scale = this.fileFolderConfig.outputSizeScale;
+    const outputSize = this.editor.getOutputSize(keepOriginalSize, scale);
     const outputSizeString = `${outputSize.width}x${outputSize.height}px`;
     this.gui.updateParameters({ outputSizeString: outputSizeString });
+    this.gui.setHiddenProperty("outputSizeScale", keepOriginalSize);
   }
 
   getOutputMimeType() {
@@ -129,22 +132,28 @@ export class Controller {
     const filename = this.fileFolderConfig.outputFilename.trim();
     const keepOriginalSize =
       this.fileFolderConfig.outputSizeMode === "original";
-    this.editor.getOutputBlob(mimeType, keepOriginalSize).then((blob) => {
-      const link = document.createElement("a");
-      const url = URL.createObjectURL(blob);
-      link.href = url;
-      link.download = filename;
-      link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 0);
-    });
+    const scale = this.fileFolderConfig.outputSizeScale;
+    this.editor
+      .getOutputBlob(mimeType, keepOriginalSize, scale)
+      .then((blob) => {
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = filename;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+      });
   }
 
   handlePreviewOpen() {
     const mimeType = this.getOutputMimeType();
     const keepOriginalSize =
       this.fileFolderConfig.outputSizeMode === "original";
-    this.editor.getOutputBlob(mimeType, keepOriginalSize).then((blob) => {
-      this.preview.open(blob);
-    });
+    const scale = this.fileFolderConfig.outputSizeScale;
+    this.editor
+      .getOutputBlob(mimeType, keepOriginalSize, scale)
+      .then((blob) => {
+        this.preview.open(blob);
+      });
   }
 }

@@ -106,7 +106,7 @@ export class GUI {
     parametersFolder.addBinding(config, "pixelate", {
       label: "Pixelate",
       min: 1,
-      max: 16,
+      max: 32,
       step: 1,
     });
     parametersFolder.addBinding(config, "contrast", {

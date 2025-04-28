@@ -94,5 +94,5 @@ void main() {
         float(quantize)
     );
     
-    gl_FragColor = vec4(dither, 1.0);
+    gl_FragColor = vec4(dither, color.a);
 }

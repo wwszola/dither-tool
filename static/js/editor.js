@@ -88,6 +88,8 @@ export class Editor {
       canvas: this.canvas,
       preserveDrawingBuffer: true,
       antialias: false,
+      alpha: true,
+      premultipliedAlpha: false,
     });
     this.renderer.setSize(16, 16);
 
@@ -104,6 +106,7 @@ export class Editor {
     const geometry = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.MeshBasicMaterial({
       map: null,
+      transparent: true,
     });
 
     this.mesh = new THREE.Mesh(geometry, material);

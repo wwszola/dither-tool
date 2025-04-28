@@ -1,9 +1,13 @@
 varying vec2 vUv;
 
 uniform sampler2D tDiffuse;
+
 uniform int ditherSize;
 uniform int quantize;
 uniform int colorMode;
+
+uniform sampler2D tCustomMatrix;
+uniform vec2 customMatrixSize;
 
 //const vec3 lumaFactor = vec3(0.2126, 0.7152, 0.0722);
 const vec3 lumaFactor = vec3(0.299, 0.587, 0.114);
@@ -36,6 +40,16 @@ int ditherIndex(float x, float y, float size){
     return int(mod(x, size)) + int(mod(y, size)) * int(size);
 }
 
+float customThresholdMap(vec2 coord){
+    float width = float(1 << int(customMatrixSize.x));
+    float height = float(1 << int(customMatrixSize.y));
+    vec2 size = vec2(width, height);
+    coord = mod(coord, size)/size;
+    float threshold = texture2D(tCustomMatrix, coord).r;
+    threshold = (threshold + 1.0) / (1.0 + width*height);
+    return threshold;
+}
+
 float thresholdMap(vec2 coord, float size){
     int index = ditherIndex(coord.x, coord.y, size);
     int iSize = int(size);
@@ -52,7 +66,12 @@ float thresholdMap(vec2 coord, float size){
 }
 
 vec3 ditherQuantize(vec2 coord, vec3 color, float size, float quantize){
-    float threshold = thresholdMap(coord, size);
+    float threshold = 0.0;
+    if(size < 0.0){
+        threshold = customThresholdMap(coord);
+    }else{
+        threshold = thresholdMap(coord, size);
+    }
     vec3 quantized = floor(color * (quantize - 1.0) + threshold);
     quantized = quantized / (quantize - 1.0);
     return quantized;

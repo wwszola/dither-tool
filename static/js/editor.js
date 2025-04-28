@@ -5,6 +5,8 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
+import { indexMatrix } from "./dither-math.js";
+
 export class Editor {
   constructor(canvasContainerId, canvasId) {
     this.canvasContainer = document.getElementById(canvasContainerId);
@@ -19,6 +21,8 @@ export class Editor {
       quantize: 2,
       colorMode: false,
       ditherSize: 2,
+      customMatrixWidth: 1,
+      customMatrixHeight: 2,
     };
 
     this.ditherShader = {
@@ -27,6 +31,8 @@ export class Editor {
         ditherSize: { value: 2 },
         quantize: { value: 2 },
         colorMode: { value: 0 },
+        tCustomMatrix: { value: null },
+        customMatrixSize: { value: new THREE.Vector2(1, 2) },
       },
       vertexShader: null,
       fragmentShader: null,
@@ -114,6 +120,11 @@ export class Editor {
     this.composer.addPass(this.passes.levelsAdjust);
     this.composer.addPass(this.passes.dither);
     this.composer.addPass(this.passes.output);
+
+    this.createIndexMatrix(
+      this.parameters.customMatrixWidth,
+      this.parameters.customMatrixHeight
+    );
   }
 
   computeRendererSize() {
@@ -222,10 +233,37 @@ export class Editor {
           this.parameters.invert = value;
           this.passes.levelsAdjust.uniforms.invert.value = Number(value);
           break;
+        case "customMatrixWidth":
+          this.parameters.customMatrixWidth = value;
+          this.passes.dither.uniforms.customMatrixSize.value.x = value;
+          break;
+        case "customMatrixHeight":
+          this.parameters.customMatrixHeight = value;
+          this.passes.dither.uniforms.customMatrixSize.value.y = value;
+          break;
         default:
           console.log(`No matching parameter key=${key} value=${value}`);
       }
     }
+  }
+
+  createIndexMatrix(width, height) {
+    if (this.passes.dither.uniforms.tCustomMatrix.value) {
+      this.passes.dither.uniforms.tCustomMatrix.value.dispose();
+      this.passes.dither.uniforms.tCustomMatrix.value = null;
+    }
+    const data = indexMatrix(width, height);
+    const texture = new THREE.DataTexture(
+      data,
+      1 << width,
+      1 << height,
+      THREE.RedFormat,
+      THREE.FloatType
+    );
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+    texture.needsUpdate = true;
+    this.passes.dither.uniforms.tCustomMatrix.value = texture;
   }
 
   // Render the scene

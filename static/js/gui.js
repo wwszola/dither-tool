@@ -1,5 +1,6 @@
 import { Pane } from "tweakpane";
 import * as TweakpaneFileImportPlugin from "tweakpane-plugin-file-import";
+import * as TweakpanePluginInputs from "tweakpane-plugin-inputs";
 
 export class GUI {
   constructor(guiContainerId) {
@@ -19,6 +20,7 @@ export class GUI {
       container: this.guiContainer,
     });
     this.pane.registerPlugin(TweakpaneFileImportPlugin);
+    this.pane.registerPlugin(TweakpanePluginInputs);
   }
 
   // Bind file upload and save actions
@@ -132,14 +134,41 @@ export class GUI {
       step: 1,
     });
     parametersFolder.addBinding(config, "colorMode", { label: "Color" });
-    parametersFolder.addBinding(config, "ditherSize", {
-      label: "Dither size",
-      options: [
-        { text: "2x2", value: 2 },
-        { text: "4x4", value: 4 },
-        { text: "8x8", value: 8 },
-      ],
-    });
+    parametersFolder
+      .addBinding(config, "ditherSize", {
+        label: "Dither size",
+        options: [
+          { text: "2x2", value: 2 },
+          { text: "4x4", value: 4 },
+          { text: "8x8", value: 8 },
+          { text: "Custom", value: -1 },
+        ],
+      })
+      .on("change", config.onDitherSizeChange);
+
+    const customMatrixWidthBinding = parametersFolder
+      .addBinding(config, "customMatrixWidth", {
+        label: "Dither width",
+        view: "stepper",
+        min: 0,
+        max: 8,
+        step: 1,
+        hidden: true,
+      })
+      .on("change", config.onDitherSizeChange);
+    this.hidableBindings.customMatrixWidth = customMatrixWidthBinding;
+
+    const customMatrixHeightBinding = parametersFolder
+      .addBinding(config, "customMatrixHeight", {
+        label: "Dither height",
+        view: "stepper",
+        min: 0,
+        max: 8,
+        step: 1,
+        hidden: true,
+      })
+      .on("change", config.onDitherSizeChange);
+    this.hidableBindings.customMatrixHeight = customMatrixHeightBinding;
 
     defaultState = parametersFolder.exportState();
 
@@ -167,7 +196,9 @@ export class GUI {
     value = Boolean(value);
     switch (binding) {
       case "outputSizeScale":
-        this.hidableBindings.outputSizeScale.hidden = value;
+      case "customMatrixWidth":
+      case "customMatrixHeight":
+        this.hidableBindings[binding].hidden = value;
         break;
       default:
         console.log(`No matching binding=${binding} value=${value}`);

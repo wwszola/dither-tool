@@ -31,6 +31,7 @@ export class Controller {
       this.parametersFolderConfig = {
         ...this.editor.parameters,
         onChange: this.handleParameterChange.bind(this),
+        onDitherSizeChange: this.handleDitherSizeChange.bind(this),
       };
 
       this.gui.initialize();
@@ -111,6 +112,18 @@ export class Controller {
     const outputSizeString = `${outputSize.width}x${outputSize.height}px`;
     this.gui.updateParameters({ outputSizeString: outputSizeString });
     this.gui.setHiddenProperty("outputSizeScale", keepOriginalSize);
+  }
+
+  handleDitherSizeChange() {
+    const ditherSize = this.parametersFolderConfig.ditherSize;
+    const customMode = ditherSize === -1;
+    if (customMode) {
+      const width = this.parametersFolderConfig.customMatrixWidth;
+      const height = this.parametersFolderConfig.customMatrixHeight;
+      this.editor.createIndexMatrix(width, height);
+    }
+    this.gui.setHiddenProperty("customMatrixWidth", !customMode);
+    this.gui.setHiddenProperty("customMatrixHeight", !customMode);
   }
 
   getOutputMimeType() {
